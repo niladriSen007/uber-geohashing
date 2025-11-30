@@ -1,8 +1,17 @@
 package com.niladri.uber_geohashing.dto;
 
-public record DriverLocationRequest(
-    String driverId,
-    Double latitude,
-    Double longitude) {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class DriverLocationRequest {
+
+    String driverId;
+    Double latitude;
+    Double longitude;
 }
