@@ -32,31 +32,36 @@ public class RideDetailsService implements IRideDetailsService {
     @Override
     @Transactional(readOnly = true)
     public Optional<RideDetailsResponse> findRideDetailsById(Long id) {
-        return Optional.empty();
+        return rideDetailsRepository.findById(id).map(Mapper::toRideDetailsResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<RideDetailsResponse> findAllRides() {
-        return List.of();
+        return rideDetailsRepository.findAll().stream().map(Mapper::toRideDetailsResponse).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<RideDetailsResponse> findRideByPassengerId(Long passengerId) {
-        return List.of();
+        Rider rider = riderRepository.findById(passengerId).orElseThrow(() -> new RuntimeException("Rider not found"));
+        List<RideDetails> rideByRider = rideDetailsRepository.findByRider(rider);
+        return rideByRider.stream().map(Mapper::toRideDetailsResponse).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<RideDetailsResponse> findRideByDriverId(Long driverId) {
-        return List.of();
+        Driver driver = driverRepository.findById(driverId).orElseThrow(() -> new RuntimeException("Driver not found"));
+        List<RideDetails> rideByDriver = rideDetailsRepository.findByDriver(driver);
+        return rideByDriver.stream().map(Mapper::toRideDetailsResponse).toList();
     }
 
     @Override
     public RideDetailsResponse create(RideDetailsRequest request) {
         Rider rider = riderRepository.findById(request.getRiderId()).orElseThrow(() -> new RuntimeException("Rider not found"));
-        RideDetails newRideDetails = RideDetails.builder().rider(rider).pickupLocationLatitude(request.getPickupLocationLatitude())
+        RideDetails newRideDetails = RideDetails.builder()
+                .rider(rider).pickupLocationLatitude(request.getPickupLocationLatitude())
                 .pickupLocationLongitude(request.getPickupLocationLongitude())
                 .dropoffLocationLatitude(request.getDropoffLocationLatitude())
                 .dropoffLocationLongitude(request.getDropoffLocationLongitude())
